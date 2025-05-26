@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   MAIN                                                              05/26/2025 23:02:38 PAGE 1   
+C51 COMPILER V9.57.0.0   MAIN                                                              05/26/2025 23:37:18 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
@@ -16,10 +16,9 @@ line level    source
    6          #include "Key.h"
    7          
    8          #define uchar unsigned char
-   9          #define NO_KEY_PRESSED 0  // 定义无按键按下的状态值
-*** WARNING C317 IN LINE 9 OF main.c: attempt to redefine macro 'NO_KEY_PRESSED'
-  10          
-  11          uchar light_value; // 光照强度变量
+   9          
+  10          uchar light_value; // 光照强度变量
+  11          uchar threshold = 128; // 初始阈值
   12          
   13          /**
   14           * @brief 主函数
@@ -33,20 +32,41 @@ line level    source
   22   1      
   23   1          while (1) {
   24   2              int current_key = get_key_status();
-  25   2              handle_key_events(&last_key, current_key);
+  25   2              handle_key_events(&last_key, current_key, &threshold);
   26   2      
   27   2              // 读取光照强度
   28   2              light_value = ADC0832_ReadChannel(0); // 假设光照传感器连接到通道0
   29   2      
-  30   2              // 在LCD1602上显示光照强度
-  31   2              LCD_ShowString(1, 1, "Light:");
-  32   2              LCD_ShowNum(1, 7, light_value, 3);
-  33   2              
-  34   2              // 延时更新
-  35   2              Delay(200);
-*** WARNING C206 IN LINE 35 OF main.c: 'Delay': missing function-prototype
-*** ERROR C267 IN LINE 35 OF main.c: 'Delay': requires ANSI-style prototype
-  36   2          }
-  37   1      }
+  30   2              // 根据光照强度与阈值的比较结果控制电机旋转
+  31   2              if (light_value > threshold) {
+  32   3                  step_motor(DIRECTION_CW);
+  33   3              } else {
+  34   3                  step_motor(DIRECTION_CCW);
+  35   3              }
+  36   2      
+  37   2              // 在LCD1602上显示光照强度及阈值
+  38   2              LCD_ShowString(1, 1, "Light:");
+  39   2              LCD_ShowNum(1, 7, light_value, 3);
+  40   2              LCD_ShowString(1, 10, "lux");
+  41   2      
+  42   2              LCD_ShowString(2, 1, "Thres:");
+  43   2              LCD_ShowNum(2, 7, threshold, 3);
+  44   2              LCD_ShowString(2, 10, "lux");
+  45   2          }
+  46   1      }
 
-C51 COMPILATION COMPLETE.  2 WARNING(S),  1 ERROR(S)
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    149    ----
+   CONSTANT SIZE    =     18    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       4
+C51 COMPILER V9.57.0.0   MAIN                                                              05/26/2025 23:37:18 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
