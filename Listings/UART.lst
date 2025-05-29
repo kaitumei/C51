@@ -1,0 +1,178 @@
+C51 COMPILER V9.57.0.0   UART                                                              05/30/2025 00:00:05 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\UART.obj
+COMPILER INVOKED BY: E:\Study\Keil\keil c51\KeilData\C51\BIN\C51.EXE UART.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND 
+                    -PRINT(.\Listings\UART.lst) OBJECT(.\Objects\UART.obj)
+
+line level    source
+
+   1          #include "UART.h"
+   2          #include <REGX52.H>
+   3          #include "Motor.h"  // 添加电机控制头文件
+   4          #include "Delay.h"  // 添加延时函数头文件
+   5          
+   6          // 定义接收标志
+   7          bit uart_rx_flag = 0;  // 串口接收标志
+   8          uchar uart_rx_data = 0; // 接收到的数据
+   9          
+  10          /**
+  11           * @brief 串口初始化，设置为模式1，波特率9600
+  12           * @param 无
+  13           * @retval 无
+  14           * @note 晶振11.0592MHz
+  15           */
+  16          void UART_Init(void)
+  17          {
+  18   1          // 设置串口工作模式1(8位UART)
+  19   1          SCON = 0x50;    // 0101 0000 - SM0=0,SM1=1(模式1),REN=1(允许接收)
+  20   1          
+  21   1          // 设置定时器1为模式2(8位自动重载)
+  22   1          TMOD &= 0x0F;   // 清除定时器1的模式位
+  23   1          TMOD |= 0x20;   // 设置定时器1为模式2
+  24   1          
+  25   1          // 计算重装值以获得9600波特率(11.0592MHz晶振)
+  26   1          // 9600波特率，11.0592MHz晶振，计算方法：256 - (11059200/12/32/9600)
+  27   1          TH1 = 0xFD;     // 设置重装值为0xFD
+  28   1          TL1 = 0xFD;
+  29   1          
+  30   1          // 打开定时器1
+  31   1          TR1 = 1;        // 启动定时器1
+  32   1          
+  33   1          // 设置中断
+  34   1          ES = 1;         // 开启串口中断
+  35   1          EA = 1;         // 开启总中断
+  36   1          
+  37   1          // 初始化接收标志
+  38   1          uart_rx_flag = 0;
+  39   1      }
+  40          
+  41          /**
+  42           * @brief 发送一个字节数据
+  43           * @param dat 要发送的数据
+  44           * @retval 无
+  45           */
+  46          void UART_SendByte(uchar dat)
+  47          {
+  48   1          SBUF = dat;     // 将数据写入SBUF
+  49   1          while(!TI);     // 等待发送完成(TI=1)
+  50   1          TI = 0;         // 清除发送完成标志
+  51   1      }
+  52          
+  53          /**
+  54           * @brief 发送字符串
+C51 COMPILER V9.57.0.0   UART                                                              05/30/2025 00:00:05 PAGE 2   
+
+  55           * @param str 要发送的字符串指针
+  56           * @retval 无
+  57           */
+  58          void UART_SendString(uchar *str)
+  59          {
+  60   1          while(*str != '\0')
+  61   1          {
+  62   2              UART_SendByte(*str++);
+  63   2          }
+  64   1      }
+  65          
+  66          /**
+  67           * @brief 接收一个字节数据(阻塞方式)
+  68           * @param 无
+  69           * @retval 接收到的数据
+  70           */
+  71          uchar UART_ReceiveByte(void)
+  72          {
+  73   1          while(!RI);     // 等待接收完成(RI=1)
+  74   1          RI = 0;         // 清除接收完成标志
+  75   1          return SBUF;    // 返回接收到的数据
+  76   1      }
+  77          
+  78          /**
+  79           * @brief 获取接收标志状态
+  80           * @param 无
+  81           * @retval 1表示有数据接收，0表示无数据
+  82           */
+  83          bit UART_GetRxFlag(void)
+  84          {
+  85   1          return uart_rx_flag;
+  86   1      }
+  87          
+  88          /**
+  89           * @brief 清除接收标志
+  90           * @param 无
+  91           * @retval 无
+  92           */
+  93          void UART_ClearRxFlag(void)
+  94          {
+  95   1          uart_rx_flag = 0;
+  96   1      }
+  97          
+  98          /**
+  99           * @brief 处理串口接收到的命令
+ 100           * @param cmd 接收到的命令字符
+ 101           * @retval 无
+ 102           */
+ 103          void UART_ProcessCommand(uchar cmd)
+ 104          {
+ 105   1          unsigned char i;
+ 106   1          switch(cmd)
+ 107   1          {
+ 108   2              case CMD_MOTOR_CW:  // 电机顺时针旋转
+ 109   2                  // 执行24步旋转（与按键功能一致）
+ 110   2                  for(i = 0; i < 24; i++) {
+ 111   3                      step_motor(DIRECTION_CW);
+ 112   3                      Delay_ms(20);  // 控制转速
+ 113   3                  }
+ 114   2                  UART_SendString("Motor: Clockwise\r\n");
+ 115   2                  break;
+ 116   2              
+C51 COMPILER V9.57.0.0   UART                                                              05/30/2025 00:00:05 PAGE 3   
+
+ 117   2              case CMD_MOTOR_CCW: // 电机逆时针旋转
+ 118   2                  // 执行24步旋转（与按键功能一致）
+ 119   2                  for(i = 0; i < 24; i++) {
+ 120   3                      step_motor(DIRECTION_CCW);
+ 121   3                      Delay_ms(20);  // 控制转速
+ 122   3                  }
+ 123   2                  UART_SendString("Motor: Counter-Clockwise\r\n");
+ 124   2                  break;
+ 125   2              
+ 126   2              case CMD_MOTOR_STOP: // 电机停止
+ 127   2                  Motor_Stop();
+ 128   2                  UART_SendString("Motor: Stop\r\n");
+ 129   2                  break;
+ 130   2              
+ 131   2              default:
+ 132   2                  UART_SendString("Unknown Command\r\n");
+ 133   2                  break;
+ 134   2          }
+ 135   1      }
+ 136          
+ 137          /**
+ 138           * @brief 串口中断服务函数
+ 139           * @note 此中断函数需要在主程序中打开相应的中断允许位
+ 140           */
+ 141          void UART_Routine() interrupt 4
+ 142          {
+ 143   1          if(RI)
+ 144   1          {
+ 145   2              // 接收到数据，保存并设置标志位
+ 146   2              uart_rx_data = SBUF;
+ 147   2              uart_rx_flag = 1;
+ 148   2              RI = 0;     // 清除接收中断标志
+ 149   2          }
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    192    ----
+   CONSTANT SIZE    =     78    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

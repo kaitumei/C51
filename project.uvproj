@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -423,6 +423,36 @@
               <FileName>Key.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Key.h</FilePath>
+            </File>
+            <File>
+              <FileName>LightControl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LightControl.h</FilePath>
+            </File>
+            <File>
+              <FileName>LightControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LightControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Bluetooth.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bluetooth.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Bluetooth.h</FilePath>
+            </File>
+            <File>
+              <FileName>UART.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART.c</FilePath>
+            </File>
+            <File>
+              <FileName>UART.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\UART.h</FilePath>
             </File>
           </Files>
         </Group>

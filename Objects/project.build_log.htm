@@ -18,15 +18,16 @@ Hex Converter:   OH51.exe V2.7.0.0
 CPU DLL:         S8051.DLL V3.113.0.0
 Dialog DLL:      DP51.DLL V2.64.0.0 
 <h2>Project:</h2>
-C:\Users\hym\Desktop\øŒ…Ë\project.uvproj
-Project File Date:  05/26/2025
+C:\Users\hym\Desktop\Kes\project.uvproj
+Project File Date:  05/29/2025
 
 <h2>Output:</h2>
 Build target 'Curtain'
 compiling main.c...
-compiling Motor.c...
-compiling Key.c...
+compiling UART.c...
 linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_MOTOR_SETDIRECTION?MOTOR
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_SHOWCHAR?LCD1602
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -35,10 +36,16 @@ linking...
     SEGMENT: ?PR?_LCD_SHOWHEXNUM?LCD1602
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_LCD_SHOWBINNUM?LCD1602
-Program Size: data=42.0 xdata=0 code=1470
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SCROLL_TEXT?KEY
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GET_LIGHT_LEVEL_TEXT?LIGHTCONTROL
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_RECEIVEBYTE?UART
+Program Size: data=91.3 xdata=0 code=3208
 creating hex file from ".\Objects\project"...
-".\Objects\project" - 0 Error(s), 4 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Objects\project" - 0 Error(s), 8 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

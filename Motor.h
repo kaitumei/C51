@@ -15,5 +15,7 @@ extern code unsigned char steps[8];
 
 // 函数声明
 void step_motor(unsigned char direction);
+void Motor_SetDirection(unsigned char left_direction, unsigned char right_direction);
+void Motor_Stop(void);
 
 #endif

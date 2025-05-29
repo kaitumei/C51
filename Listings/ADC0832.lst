@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   ADC0832                                                           05/26/2025 22:54:58 PAGE 1   
+C51 COMPILER V9.57.0.0   ADC0832                                                           05/29/2025 22:37:41 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE ADC0832
@@ -62,7 +62,7 @@ line level    source
   52   1          // 结束转换
   53   1          ADC_CS = 1;  // 取消选中
   54   1          return adc_value;
-C51 COMPILER V9.57.0.0   ADC0832                                                           05/26/2025 22:54:58 PAGE 2   
+C51 COMPILER V9.57.0.0   ADC0832                                                           05/29/2025 22:37:41 PAGE 2   
 
   55   1      }    
 
